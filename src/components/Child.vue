@@ -44,13 +44,52 @@
                 mm++;
                 // $parent 特殊变量, 表示父组件代理对象
                 $parent.mm--;
-                
+
             }">borrow 1 yuan from parent</button>
         </div>
 
+        <!-- 
+            作用域slot 只能单独使用, 同时存在多个 template 会报错
+         -->
+        <GrandChild :items="items">
+            <template v-slot="{ $id, $name, $done }">
+                <p :style="{
+                    color: $done ? 'green': 'black'
+                }">
+                    {{ $name }} -- {{ $done }}
+                </p>
+            </template>
+            
+        </GrandChild>
+        <div>
+            inject value: {{ value }}
 
-        <GrandChild />
-        inject value: {{ value }}
+        </div>
+
+        <div>
+            test pinia: {{ infoStore.count }} --- getter: {{ infoStore.total }}
+            <button @click="testPiniaAdd">add</button>
+            <button @click="testPiniaMinus">minus</button>
+        </div>
+        <div>
+            test pinia (another way): {{ todoStore.todos[0].id }} --- getter: {{ todoStore.total }}
+            <button @click="() => todoStore.addId()">add</button>
+        </div>
+
+
+        <div>
+            <h2>slot 插槽</h2>
+            <slot></slot>
+            <hr>
+            <slot name="aa"></slot>
+            <hr>
+            <slot name="bb"></slot>
+
+
+            <hr>
+            
+
+        </div>
 
     </div>
 </template>
@@ -94,17 +133,46 @@ defineExpose({
 
 import { inject } from "vue";
 const value = inject("key1");
+
+import useInfoStore from "../store/modules/info";
+const infoStore = useInfoStore();
+const testPiniaAdd = () => {
+    infoStore.addCount();
+}
+function testPiniaMinus() {
+    infoStore.minusCount();
+}
+
+
+import useTodoStore from "../store/modules/todo";
+const todoStore = useTodoStore()
+
+
+const items = ref([
+    {
+        id: 1,
+        name: 'sleep',
+        done: true
+    },{
+        id: 2,
+        name: 'eatl',
+        done: false
+    }
+])
+
+
 </script>
 
 <style scoped>
 .box {
 
-    display: flex; 
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
 
     background-color: yellowgreen;
 }
+
 div {
     border-bottom: 1px solid gray;
 }

@@ -2,12 +2,12 @@
 import { ref } from "vue";
 import Child from "./Child.vue"
 import {
-  Check,
-  Delete,
-  Edit,
-  Message,
-  Search,
-  Star,
+    Check,
+    Delete,
+    Edit,
+    Message,
+    Search,
+    Star,
 } from '@element-plus/icons-vue'
 import HintButton from "./HintButton.vue";
 
@@ -45,6 +45,8 @@ defineExpose({
 
 import { provide } from "vue";
 provide("key1", ref("key1-value"));
+
+
 </script>
 
 <template>
@@ -87,12 +89,23 @@ provide("key1", ref("key1-value"));
                     :xxx 为 model 种属性的名字
                     ="" 为绑定的变量
          -->
-        <Child v-model="count"  
-            v-model:pageNo="pageNo" v-model:pageSize="pageSize"
-            msg="hello" :money=100
-            @click="click(1, 2, $event)" @hello="helloCallback" 
-            ref="child"
-        />
+        <Child v-model="count" v-model:pageNo="pageNo" v-model:pageSize="pageSize" msg="hello" :money=100
+            @click="click(1, 2, $event)" @hello="helloCallback" ref="child"
+            :items="items"
+        >
+            <!-- 
+                子组件内的 slot 标签被替换成这里内容
+             -->
+            hello slot
+
+            <template v-slot:aa>
+                named slot aa
+            </template>
+            <template #bb>
+                named slot bb
+            </template>
+            
+        </Child>
 
         <div>
 
@@ -109,7 +122,7 @@ provide("key1", ref("key1-value"));
         <div>
             parent money = {{ mm }}
             <button @click="() => {
-                mm++ ;
+                mm++;
                 // 不需要 child.value..., 自动解包了
                 child.mm--;
             }">borrow 1 yuan from son</button>
